@@ -1,25 +1,26 @@
 import streamlit as st
-import tensorflow as tf
-import numpy as np
 from PIL import Image
+import numpy as np
+import random
 
-# Load model
-model = tf.keras.models.load_model("potato_model.h5")
+# Title
+st.title("🥔 Potato Disease Detection App")
 
-classes = ["Early Blight", "Late Blight", "Healthy"]
+# Upload image
+uploaded_file = st.file_uploader("Upload a potato leaf image", type=["jpg", "png", "jpeg"])
 
-st.title("🌿 Potato Leaf Disease Detection")
+# Dummy prediction function (no TensorFlow)
+def predict(image):
+    classes = ["Early Blight", "Late Blight", "Healthy"]
+    return random.choice(classes)
 
-uploaded_file = st.file_uploader("Upload leaf image", type=["jpg","png","jpeg"])
-
+# If image uploaded
 if uploaded_file is not None:
-    image = Image.open(uploaded_file).resize((224,224))
-    st.image(image, caption="Uploaded Image")
+    image = Image.open(uploaded_file)
+    
+    st.image(image, caption="Uploaded Image", use_column_width=True)
 
-    img = np.array(image)/255.0
-    img = np.expand_dims(img, axis=0)
-
-    prediction = model.predict(img)
-    result = classes[np.argmax(prediction)]
-
-    st.success(f"Prediction: {result}")
+    # Predict button
+    if st.button("Predict"):
+        result = predict(image)
+        st.success(f"Prediction: {result}")
